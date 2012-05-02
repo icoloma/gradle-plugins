@@ -1,0 +1,50 @@
+/**
+	Copy compile dependencies to $webAppDirName/WEB-INF/lib
+	Creates a eclipse project with all dependencies that compiles classes into
+	$webAppDirName/WEB-INF/classes and test classes into /build/test-classes.
+
+	Requires: gradle 1.0rc2 or greater
+*/
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+
+// webinflib
+if (!hasProperty('webAppDirName')) {
+  project.webAppDirName = 'src/main/webapp'
+}
+
+task 'cleanWebinflib' << { 
+  ant.delete(dir: "$webAppDirName/WEB-INF/lib")
+}
+clean.dependsOn cleanWebinflib
+
+task 'webinflib' << {
+  copy {
+    from configurations.runtime.files
+        into "$webAppDirName/WEB-INF/lib"
+    }
+}
+eclipseClasspath.dependsOn webinflib
+
+eclipse {
+  project {
+    natures 'org.eclipse.jdt.core.javanature',
+            'com.google.appengine.eclipse.core.gaeNature',
+            'com.google.gdt.eclipse.core.webAppNature'
+    buildCommand 'com.google.appengine.eclipse.core.projectValidator'
+    buildCommand 'com.google.gdt.eclipse.core.webAppProjectValidator'
+  }
+  classpath {
+    defaultOutputDir = file("$webAppDirName/WEB-INF/classes")
+    containers "com.google.appengine.eclipse.core.GAE_CONTAINER"
+    sourceSets {
+      resources {
+        output.resourcesDir = "build/test-classes"
+        output.classesDir   = "build/test-classes"
+      }
+    }
+  }
+}
+// workaround http://issues.gradle.org/browse/GRADLE-1984
+eclipse.classpath.file.beforeMerged { classpath -> classpath.entries.clear() }
