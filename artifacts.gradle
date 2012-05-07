@@ -1,0 +1,18 @@
+/**
+	Creates the javadoc  and sources artifacts for maven
+ */
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
+}
+
+task sourcesJar(type: Jar, dependsOn: compileJava) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+    include '**/*.java'
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+} 
