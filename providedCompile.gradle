@@ -1,0 +1,23 @@
+/**
+	Add the providedCompile configuration to a regular Java project
+ */
+configurations {
+	// pending http://jira.codehaus.org/browse/GRADLE-471
+	providedCompile { description = 'Jars not to be included in the generated POM' }
+}
+
+sourceSets {
+	main {
+		compileClasspath = compileClasspath + configurations.providedCompile
+		runtimeClasspath = runtimeClasspath + configurations.providedCompile
+	}
+	test {
+		compileClasspath = compileClasspath + configurations.providedCompile
+		runtimeClasspath = runtimeClasspath + configurations.providedCompile
+	}
+}
+
+gradle.taskGraph.beforeTask { task ->
+    if (task.name == 'javadoc')
+		task.options.classpath = task.options.classpath + configurations.providedCompile.resolve()
+}
