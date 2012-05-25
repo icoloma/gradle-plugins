@@ -5,6 +5,7 @@
 
 	Requires: gradle 1.0rc2 or greater
 */
+import org.gradle.plugins.ide.eclipse.model.SourceFolder
 apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'eclipse'
@@ -38,12 +39,15 @@ eclipse {
   classpath {
     defaultOutputDir = file("$webAppDirName/WEB-INF/classes")
     containers "com.google.appengine.eclipse.core.GAE_CONTAINER"
-    sourceSets {
+    /*sourceSets {
       resources {
         output.resourcesDir = "build/test-classes"
         output.classesDir   = "build/test-classes"
       }
-    }
+    }*/
+    file.whenMerged { cp ->
+      cp.entries.findAll { it instanceof SourceFolder && it.path.startsWith("src/test/") }*.output = "build/test-classes"
+    } 
   }
 }
 // workaround http://issues.gradle.org/browse/GRADLE-1984
