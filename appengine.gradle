@@ -22,9 +22,9 @@ clean.dependsOn cleanWebinflib
 
 task 'webinflib' << {
   copy {
-    from configurations.runtime.files
-        into "$webAppDirName/WEB-INF/lib"
-    }
+    from configurations.runtime.files - configurations.providedCompile.files
+    into "$webAppDirName/WEB-INF/lib"
+  }
 }
 eclipseClasspath.dependsOn webinflib
 
