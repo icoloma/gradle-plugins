@@ -20,10 +20,6 @@ sourceSets {
 gradle.taskGraph.beforeTask { task ->
     if (task.name == 'javadoc')
 		task.options.classpath = task.options.classpath + configurations.providedCompile.resolve()
-}
-
-if (project.getTasks().findByPath('eclipse') != null) {
-	eclipse {
-	  classpath.plusConfigurations += configurations.providedCompile
-	}
+    if (task.name == 'eclipse')
+    	task.classpath.plusConfigurations += configurations.providedCompile
 }
