@@ -1,0 +1,65 @@
+/**
+	Copy compile dependencies to $webAppDirName/WEB-INF/lib
+	Creates a intellij project with all dependencies that compiles classes into
+	$webAppDirName/WEB-INF/classes and test classes into /build/test-classes.
+
+  Also creates a runner to launch the server inside IDEA.
+
+	Requires: gradle 1.3 or greater
+*/
+
+apply from: 'https://raw.github.com/icoloma/gradle-plugins/master/webinflib.gradle'
+apply plugin: 'idea'
+
+idea {
+
+  // see http://gradle.org/docs/current/dsl/org.gradle.plugins.ide.idea.model.IdeaModule.html
+  module {
+    //scopes.PROVIDED.plus += configurations.providedCompile
+  }
+
+  // see http://gradle.org/docs/current/dsl/org.gradle.plugins.ide.idea.model.IdeaWorkspace.html
+  // added the GAE runner
+  workspace {
+    iws.withXml { provider ->
+        provider.asNode().depthFirst().findAll { 
+          if (it.name() == 'component' && it.attribute('name') == 'RunManager') {
+            def configNode = new XmlParser().parseText("""
+              <configuration default="false" name="gae-debug" type="Application" factoryName="Application">
+                <extension name="coverage" enabled="false" merge="false" />
+                <option name="MAIN_CLASS_NAME" value="com.google.appengine.tools.development.DevAppServerMain" />
+                <option name="VM_PARAMETERS" value="
+                  -ea 
+                  -javaagent:/opt/appengine-java-sdk/lib/agent/appengine-agent.jar 
+                  -Ddatastore.default_high_rep_job_policy_unapplied_job_pct=50 
+                  -Duser.timezone=UTC 
+                  -Dhostname=localhost:8888
+                " />
+                <option name="PROGRAM_PARAMETERS" value="
+                  --port=8888 
+                  --address=0.0.0.0
+                  war
+                " />
+                <option name="WORKING_DIRECTORY" value="file://\$PROJECT_DIR\$" />
+                <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+                <option name="ALTERNATIVE_JRE_PATH" value="" />
+                <option name="ENABLE_SWING_INSPECTOR" value="false" />
+                <option name="ENV_VARIABLES" />
+                <option name="PASS_PARENT_ENVS" value="true" />
+                <module name="${project.name}" />
+                <envs>
+                  <env name="SDK_CONFIG" value="$System.env.APPENGINE_HOME/config/sdk" />
+                  <env name="SDK_LIB" value="$System.env.APPENGINE_HOME/lib" />
+                </envs>
+                <method />
+              </configuration>
+              """)
+            it.children().add(0, configNode)
+          }
+        }
+    }
+
+  }
+
+}
+tasks.idea.dependsOn webinflib

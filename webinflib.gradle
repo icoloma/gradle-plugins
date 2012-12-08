@@ -1,0 +1,36 @@
+apply plugin: 'java'
+apply plugin: 'war'
+
+// webinflib
+if (!hasProperty('webAppDirName')) {
+  project.webAppDirName = 'src/main/webapp'
+}
+
+task 'cleanWebinflib'(overwrite: true) << { 
+  ant.delete(dir: "$webAppDirName/WEB-INF/lib")
+}
+clean.dependsOn cleanWebinflib
+
+task 'webinflib'(overwrite: true) << {
+  copy {
+    from configurations.runtime.files - configurations.providedCompile.files
+    into "$webAppDirName/WEB-INF/lib"
+  }
+}
+tasks.webinflib.doLast {
+  // appengine-api-labs.jar should have exactly this name
+  copy {
+    from("war/WEB-INF/lib/")
+    into("war/WEB-INF/lib/")
+    include("appengine-api-labs-${appengineVersion}.jar")
+    rename("appengine-api-labs-${appengineVersion}.jar", "appengine-api-labs.jar")
+  }
+  delete "war/WEB-INF/lib/appengine-api-labs-${appengineVersion}.jar"
+  
+  // this file is not in maven
+  copy {
+    from("/opt/appengine-java-sdk/lib/opt/user/appengine-webapis/v1/")
+    into("war/WEB-INF/lib/")
+    include("appengine-webapis.jar")
+  }
+}
