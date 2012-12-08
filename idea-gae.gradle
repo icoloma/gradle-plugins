@@ -15,7 +15,9 @@ idea {
 
   // see http://gradle.org/docs/current/dsl/org.gradle.plugins.ide.idea.model.IdeaModule.html
   module {
-    //scopes.PROVIDED.plus += configurations.providedCompile
+    inheritOutputDirs = false
+    outputDir = file('war/WEB-INF/classes')
+    testOutputDir = file('build/test-classes')
   }
 
   // see http://gradle.org/docs/current/dsl/org.gradle.plugins.ide.idea.model.IdeaWorkspace.html
