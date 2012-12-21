@@ -45,21 +45,6 @@ def createLauncher(launcherName, vars) {
   """)
 }
 
-/* Customize Encoding component */
-def customizeEncoding(project) {
-    def encoding = findComponent(project, 'Encoding')
-
-    if (encoding) {
-        // Change existing node.
-        encoding.@useUTFGuessing = true
-        encoding.@native2AsciiForPropertiesFiles = true
-        encoding.@defaultCharsetForPropertiesFiles = 'UTF-8'
-    } else {
-        // Create new node with default values.
-        project.appendNode 'Encoding', [useUTFGuessing: true, native2AsciiForPropertiesFiles: true, defaultCharsetForPropertiesFiles: 'UTF-8']
-    }
-}
-
 idea {
 
   // see http://gradle.org/docs/current/dsl/org.gradle.plugins.ide.idea.model.IdeaModule.html
