@@ -22,6 +22,7 @@ def createLauncher(launcherName, vars) {
         -Ddatastore.default_high_rep_job_policy_unapplied_job_pct=50 
         -Duser.timezone=UTC 
         -Dhostname=localhost:8888
+        -Dappengine.sdk.root=/opt/appengine-java-sdk
         ${vars}
       " />
       <option name="PROGRAM_PARAMETERS" value="
