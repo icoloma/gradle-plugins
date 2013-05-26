@@ -17,6 +17,16 @@ sourceSets {
 	}
 }
 
+// add to idea classpath
+// extracted from http://gradle.1045684.n5.nabble.com/Idea-project-generation-and-provided-scope-td4684287.html
+ideaModule {
+  scopes.PROVIDED.plus += configurations.providedCompile
+  scopes.PROVIDED.plus += configurations.providedRuntime
+  scopes.COMPILE.minus += configurations.providedCompile
+  scopes.RUNTIME.minus += configurations.providedRuntime
+}
+
+// add to javadoc and eclipse classpath
 gradle.taskGraph.beforeTask { task ->
     if (task.name == 'javadoc')
 		task.options.classpath = task.options.classpath + configurations.providedCompile.resolve()
