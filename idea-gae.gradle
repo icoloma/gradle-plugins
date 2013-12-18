@@ -69,7 +69,7 @@ idea {
         if (it.name() == 'component' && it.attribute('name') == 'RunManager') {
           def c = it.children();
           c.add(0, createLauncher('gae-dev', ''))
-          c.add(0, createLauncher('gae-prod', '-DgaeEnvironment=PRODUCTION'))
+          c.add(0, createLauncher('gae-prod', '-DgaeEnvironment=PRODUCTION -Dfile.encoding=iso8859-1'))
         }
       }
     }
