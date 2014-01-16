@@ -28,7 +28,7 @@ def createLauncher(launcherName, vars) {
       <option name="PROGRAM_PARAMETERS" value="
         --port=${hasProperty('portNumber')? project.portNumber : 8888}
         --address=0.0.0.0
-        war
+        ${hasProperty('webAppDirName')? project.webAppDirName : war}
       " />
       <option name="WORKING_DIRECTORY" value="file://\$PROJECT_DIR\$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -51,7 +51,7 @@ idea {
   // see http://gradle.org/docs/current/dsl/org.gradle.plugins.ide.idea.model.IdeaModule.html
   module {
     inheritOutputDirs = false
-    outputDir = file('war/WEB-INF/classes')
+    outputDir = file( (hasProperty('webAppDirName')? project.webAppDirName : 'war') + '/WEB-INF/classes')
     testOutputDir = file('build/test-classes')
   }
 
