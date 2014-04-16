@@ -22,7 +22,7 @@ clean.dependsOn cleanWebinflib
 
 task 'webinflib' << {
   copy {
-    from configurations.runtime.files
+    from configurations.runtime.files - configurations.providedCompile.files
         into "$webAppDirName/WEB-INF/lib"
     }
 }
