@@ -28,6 +28,7 @@ def createLauncher(launcherName, vars) {
       <option name="PROGRAM_PARAMETERS" value="
         --port=${project.hasProperty('portNumber')? portNumber : 8888}
         --address=0.0.0.0
+        --disable_update_check
         ${project.hasProperty('webAppDirName')? webAppDirName : 'war'}
       " />
       <option name="WORKING_DIRECTORY" value="file://\$PROJECT_DIR\$" />
